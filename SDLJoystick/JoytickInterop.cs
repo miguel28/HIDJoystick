@@ -22,7 +22,7 @@ namespace JoytickInterop
 	    HAT_LEFTDOWN
     };
     /* OSX Positions
-    public enum JoystickHatPositions
+    public enum JoystickHatPositionsC:\Users\User\Documents\Visual Studio 2013\Projects\HIDJoystick\SDLJoystick\SDL64.dll
     {
         HAT_CENTERED,
         HAT_UP,
@@ -367,7 +367,7 @@ namespace JoytickInterop
 
             float Value = (float)((float)SDL_JoystickGetAxis(JoyHandle, Axis)/32768.0f);
 
-			try
+			/*try
 			{
 				if (Math.Abs (Value) > 0.15)
 					return Value;
@@ -377,8 +377,30 @@ namespace JoytickInterop
 			catch 
 			{
 				return 0.0f;
-			}
+			}*/
+            return Value;
 		}
+        public float GetAxis(short Axis, float DeathZone)
+        {
+            float axis = GetAxis(Axis);
+            float FinalAxis = 0.0f;
+            bool negative = axis < 0.0f;
+            if (negative)
+                axis *= -1;
+
+            if (axis < DeathZone)
+                FinalAxis = 0.0f;
+            else
+            {
+                FinalAxis = axis - DeathZone;
+                FinalAxis /= (1.0f - DeathZone);
+
+                if (negative)
+                    FinalAxis *= -1;
+            }
+
+            return FinalAxis;
+        }
         public JoystickHatPositions GetHatHeld(int NumHat)
         {
             return (JoystickHatPositions)SDL_JoystickGetHat(JoyHandle, NumHat);
